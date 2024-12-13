@@ -11,7 +11,12 @@ class SikayetlerimPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Şikayetlerim'),
+        title: Text(
+          'Şikayetlerim',
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.green[600],
+        elevation: 4,
       ),
       body: currentUser != null
           ? StreamBuilder<QuerySnapshot>(
@@ -28,7 +33,16 @@ class SikayetlerimPage extends StatelessWidget {
                   return Center(child: Text('Bir hata oluştu.'));
                 }
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return Center(child: Text('Henüz şikayet kaydı yok.'));
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        'Henüz şikayet kaydı yok. Lütfen şikayet kaydınızı ekleyin.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                      ),
+                    ),
+                  );
                 }
 
                 return ListView(
@@ -38,40 +52,30 @@ class SikayetlerimPage extends StatelessWidget {
                     String sikayetId = doc.id; // Şikayet ID'si
 
                     return Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(10.0),
                       child: Container(
-                        margin: EdgeInsets.symmetric(
-                            vertical:
-                                8.0), // Liste öğeleri arasına boşluk ekler
-                        padding: EdgeInsets.all(
-                            12.0), // Container içine boşluk ekler
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
+                        padding: EdgeInsets.all(16.0),
                         decoration: BoxDecoration(
-                          color:
-                              Colors.white, // Arka plan rengini beyaz yapıyoruz
-                          borderRadius:
-                              BorderRadius.circular(12.0), // Köşe yuvarlama
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12.0),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey
-                                  .withOpacity(0.2), // Hafif bir gölge ekler
+                              color: Colors.grey.withOpacity(0.1),
                               spreadRadius: 1,
-                              blurRadius: 8,
-                              offset: Offset(0,
-                                  4), // Gölgeyi biraz sağa ve aşağıya kaydırıyoruz
+                              blurRadius: 6,
+                              offset: Offset(0, 4),
                             ),
                           ],
                         ),
                         child: ListTile(
-                          contentPadding: EdgeInsets
-                              .zero, // Varsayılan padding'i sıfırlıyoruz
+                          contentPadding: EdgeInsets.zero,
                           title: Text(
                             data['sikayet'] ?? 'Şikayet Yok',
                             style: TextStyle(
-                              fontSize: 18, // Başlık boyutunu ayarlıyoruz
-                              fontWeight:
-                                  FontWeight.bold, // Başlığı kalın yapıyoruz
-                              color: Colors
-                                  .black, // Başlık rengini siyah yapıyoruz
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
                             ),
                           ),
                           subtitle: Text(
@@ -80,13 +84,11 @@ class SikayetlerimPage extends StatelessWidget {
                                     .format(data['tarih']?.toDate())
                                 : 'Tarih Yok',
                             style: TextStyle(
-                              fontSize: 14, // Alt başlık boyutunu ayarlıyoruz
-                              color: Colors
-                                  .grey, // Alt başlık rengini gri yapıyoruz
+                              fontSize: 14,
+                              color: Colors.grey[600],
                             ),
                           ),
                           onTap: () {
-                            // Tıklanılan şikayetin ID'si ve verilerini yeni sayfaya gönder
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -104,7 +106,15 @@ class SikayetlerimPage extends StatelessWidget {
                 );
               },
             )
-          : Center(child: Text('Lütfen giriş yapınız')),
+          : Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'Lütfen giriş yapınız.',
+                  style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                ),
+              ),
+            ),
     );
   }
 }

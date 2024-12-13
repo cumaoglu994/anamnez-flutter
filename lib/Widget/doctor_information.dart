@@ -52,9 +52,11 @@ class DoctorInformation extends StatelessWidget {
                     CircleAvatar(
                       radius: 40,
                       backgroundColor: Colors.grey[200],
-                      child: Image.asset(
-                        'assets/images/logo.png',
-                      ),
+                      child: data['gender'] == "erkek"
+                          ? Image.asset(
+                              'assets/images/male.jpg') // Erkek için resim
+                          : Image.asset(
+                              'assets/images/female.jpg'), // Kadın için resim
                     ),
                     SizedBox(width: 15),
                     Expanded(
@@ -62,13 +64,28 @@ class DoctorInformation extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            data['name'] ?? 'Doctor Name',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
+                          Row(
+                            children: [
+                              Text(
+                                data['name'] ?? 'Doctor Name',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                data['surname'] ?? 'Doctor Name',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ],
                           ),
                           SizedBox(height: 5),
                           Text(
@@ -100,7 +117,7 @@ class DoctorInformation extends StatelessWidget {
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         subtitle: Text(
-                          data['mail'] ?? 'No Email Provided',
+                          data['email'] ?? 'No Email Provided',
                           style: TextStyle(fontSize: 14, color: Colors.black87),
                         ),
                         trailing:
@@ -124,12 +141,15 @@ class DoctorInformation extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Align(
-                        alignment: Alignment(-0.9, 0),
-                        child: Text(
-                          'Address',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Align(
+                          alignment: Alignment(-0.9, 0),
+                          child: Text(
+                            'Address',
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ),
                       Padding(
@@ -157,15 +177,18 @@ class DoctorInformation extends StatelessWidget {
             try {
               // Mevcut kullanıcı kimliğini al
               final currentUser = FirebaseAuth.instance.currentUser;
+              final String doctorId = data['userId']; // Doktor ID
 
               if (currentUser != null) {
                 // Firestore'da 'sikayetlerim' koleksiyonuna yeni bir benzersiz kayıt ekle
-                DocumentReference documentReference = await FirebaseFirestore
-                    .instance
-                    .collection('users')
-                    .doc(currentUser.uid)
-                    .collection('sikayetlerim')
-                    .add({
+                DocumentReference documentReference =
+                    await FirebaseFirestore.instance
+                        .collection('doctor')
+                        .doc(doctorId) //
+                        .collection('hastalarim')
+                        .doc(currentUser.uid) //
+                        .collection('sikayetleri')
+                        .add({
                   'tarih': DateTime.now(), // Örnek veri
                   'sikayet': 'Ön görüşme talebi', // Örnek veri
                   // Diğer alanlar burada belirtilebilir

@@ -1,14 +1,10 @@
 import 'package:e_anamnez/Widget/doctor_information.dart';
-import 'package:e_anamnez/hasta_bilgileri/sistemlerin_sorgusu.dart';
+import 'package:e_anamnez/hasta_bilgileri/sistemlerinSorgusu/kalp.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Gilt extends StatefulWidget {
-  final Map<String, dynamic> data;
-
-  Gilt({required this.data});
-
   @override
   _GiltPageState createState() => _GiltPageState();
 }
@@ -38,11 +34,6 @@ class _GiltPageState extends State<Gilt> {
 
         // Bilgiler güncellendikten sonra UI'yi güncelle
         setState(() {});
-
-        // Kullanıcıya bilgi mesajı göster
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Bilgiler başarıyla güncellendi')),
-        );
       } else {
         print('Kullanıcı bulunamadı.');
       }
@@ -108,7 +99,7 @@ class _GiltPageState extends State<Gilt> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (BuildContext context) {
-                    return SistemlerinSorgusu(); // Kendi UserScreen'iniz burada
+                    return Kalp(); // Kendi UserScreen'iniz burada
                   }),
                 );
               },

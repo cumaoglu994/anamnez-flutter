@@ -11,10 +11,10 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  firebase_core: ^3.8.0
-  cloud_firestore: ^5.5.0
-  firebase_storage: ^12.3.4
-  firebase_auth: ^5.3.1
+  firebase_core: ^3.8.1
+  cloud_firestore: ^5.5.1
+  firebase_storage: ^12.3.7
+  firebase_auth: ^5.3.4
   fluttertoast: ^8.0.9
   random_string: ^2.3.1
   image_picker: ^1.1.2
@@ -36,7 +36,9 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/logo.png
-    - assets/images/
+    - assets/images/female.jpg
+    - assets/images/male.jpg
+    
 
   fonts:
     - family: Poppins

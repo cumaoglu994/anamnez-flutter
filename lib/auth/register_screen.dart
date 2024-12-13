@@ -10,13 +10,9 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final AuthController _authController = AuthController();
-
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-
   late String email;
-
   late String name;
-
   late String password;
   bool _isloading = false;
 

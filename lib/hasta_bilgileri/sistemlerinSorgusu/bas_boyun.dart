@@ -1,14 +1,10 @@
 import 'package:e_anamnez/Widget/doctor_information.dart';
-import 'package:e_anamnez/hasta_bilgileri/sistemlerin_sorgusu.dart';
+import 'package:e_anamnez/hasta_bilgileri/sistemlerinSorgusu/gastrointestinal.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class BasBoyun extends StatefulWidget {
-  final Map<String, dynamic> data;
-
-  BasBoyun({required this.data});
-
   @override
   _BasBoyunPageState createState() => _BasBoyunPageState();
 }
@@ -65,11 +61,6 @@ class _BasBoyunPageState extends State<BasBoyun> {
 
         // Bilgiler güncellendikten sonra UI'yi güncelle
         setState(() {});
-
-        // Kullanıcıya bilgi mesajı göster
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Bilgiler başarıyla güncellendi')),
-        );
       } else {
         print('Kullanıcı bulunamadı.');
       }
@@ -263,7 +254,7 @@ class _BasBoyunPageState extends State<BasBoyun> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (BuildContext context) {
-                    return SistemlerinSorgusu(); // Kendi UserScreen'iniz burada
+                    return Gastrointestinal(); // Kendi UserScreen'iniz burada
                   }),
                 );
               },

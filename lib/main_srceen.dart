@@ -1,7 +1,7 @@
 import 'package:e_anamnez/navigation_Screens/notification_srceen.dart';
 import 'package:e_anamnez/navigation_Screens/user_screen.dart';
 import 'package:e_anamnez/navigation_Screens/sikayetlerim_page.dart';
-import 'package:e_anamnez/navigation_Screens/home_srceen.dart';
+import 'package:e_anamnez/navigation_Screens/home/home_srceen.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatefulWidget {

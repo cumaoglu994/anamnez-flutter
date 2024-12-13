@@ -1,14 +1,10 @@
 import 'package:e_anamnez/Widget/doctor_information.dart';
-import 'package:e_anamnez/hasta_bilgileri/sistemlerin_sorgusu.dart';
+import 'package:e_anamnez/hasta_bilgileri/sistemlerinSorgusu/santral_sinir.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Kas extends StatefulWidget {
-  final Map<String, dynamic> data;
-
-  Kas({required this.data});
-
   @override
   _KasPageState createState() => _KasPageState();
 }
@@ -44,11 +40,6 @@ class _KasPageState extends State<Kas> {
 
         // Bilgiler güncellendikten sonra UI'yi güncelle
         setState(() {});
-
-        // Kullanıcıya bilgi mesajı göster
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Bilgiler başarıyla güncellendi')),
-        );
       } else {
         print('Kullanıcı bulunamadı.');
       }
@@ -143,7 +134,7 @@ class _KasPageState extends State<Kas> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (BuildContext context) {
-                    return SistemlerinSorgusu(); // Kendi UserScreen'iniz burada
+                    return SantralSinir(); // Kendi UserScreen'iniz burada
                   }),
                 );
               },

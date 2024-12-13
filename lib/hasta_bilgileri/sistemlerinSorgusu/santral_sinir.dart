@@ -1,14 +1,10 @@
 import 'package:e_anamnez/Widget/doctor_information.dart';
-import 'package:e_anamnez/hasta_bilgileri/sistemlerin_sorgusu.dart';
+import 'package:e_anamnez/hasta_bilgileri/sistemlerinSorgusu/solumun.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class SantralSinir extends StatefulWidget {
-  final Map<String, dynamic> data;
-
-  SantralSinir({required this.data});
-
   @override
   _SantralSinirPageState createState() => _SantralSinirPageState();
 }
@@ -56,11 +52,6 @@ class _SantralSinirPageState extends State<SantralSinir> {
 
         // Bilgiler güncellendikten sonra UI'yi güncelle
         setState(() {});
-
-        // Kullanıcıya bilgi mesajı göster
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Bilgiler başarıyla güncellendi')),
-        );
       } else {
         print('Kullanıcı bulunamadı.');
       }
@@ -217,7 +208,7 @@ class _SantralSinirPageState extends State<SantralSinir> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (BuildContext context) {
-                    return SistemlerinSorgusu(); // Kendi UserScreen'iniz burada
+                    return Solumun(); // Kendi UserScreen'iniz burada
                   }),
                 );
               },

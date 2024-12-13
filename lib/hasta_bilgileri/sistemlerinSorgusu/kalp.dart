@@ -1,3 +1,4 @@
+import 'package:e_anamnez/Widget/checkbox_sorgusu.dart';
 import 'package:e_anamnez/Widget/doctor_information.dart';
 import 'package:e_anamnez/hasta_bilgileri/sistemlerinSorgusu/kas.dart';
 import 'package:flutter/material.dart';
@@ -54,76 +55,81 @@ class _KalpPageState extends State<Kalp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Sistemlerin Sorgusu '),
-      ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: ListView(
           children: [
             SizedBox(height: 20),
-            Center(
-              child: Text(
-                'Kalp ',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.health_and_safety,
+                  size: 30,
+                  color: Colors.red,
                 ),
-              ),
+                SizedBox(width: 8),
+                Text(
+                  'Kalp',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
+
             SizedBox(height: 16),
-            // Checkbox'lar için bir liste oluşturuyoruz
-            checkbox(
-              "Goğüs ağrısı",
-              _Gogusagrisi,
-              (bool? value) {
+            // CustomCheckbox kullanımı
+            CustomCheckbox(
+              text: "Goğüs ağrısı",
+              value: _Gogusagrisi,
+              onChanged: (bool? value) {
                 setState(() {
                   _Gogusagrisi = value ?? false;
                 });
               },
             ),
             SizedBox(height: 10),
-            checkbox(
-              "Nefes darlığı",
-              _nefesDarligi,
-              (bool? value) {
+            CustomCheckbox(
+              text: "Nefes darlığı",
+              value: _nefesDarligi,
+              onChanged: (bool? value) {
                 setState(() {
                   _nefesDarligi = value ?? false;
                 });
               },
             ),
             SizedBox(height: 10),
-            checkbox(
-              "Ortopne",
-              _Ortopne,
-              (bool? value) {
+            CustomCheckbox(
+              text: "Ortopne",
+              value: _Ortopne,
+              onChanged: (bool? value) {
                 setState(() {
                   _Ortopne = value ?? false;
                 });
               },
             ),
             SizedBox(height: 10),
-            checkbox(
-              "Çarpıntı",
-              _carpinti,
-              (bool? value) {
+            CustomCheckbox(
+              text: "Çarpıntı",
+              value: _carpinti,
+              onChanged: (bool? value) {
                 setState(() {
                   _carpinti = value ?? false;
                 });
               },
             ),
             SizedBox(height: 10),
-            checkbox(
-              "Bacaklarda şişlik",
-              _bacaklardaSislik,
-              (bool? value) {
+            CustomCheckbox(
+              text: "Bacaklarda şişlik",
+              value: _bacaklardaSislik,
+              onChanged: (bool? value) {
                 setState(() {
                   _bacaklardaSislik = value ?? false;
                 });
               },
             ),
-            SizedBox(height: 10),
-
             SizedBox(height: 20), // Butonun üstünde biraz boşluk
             ElevatedButton(
               style: ElevatedButton.styleFrom(

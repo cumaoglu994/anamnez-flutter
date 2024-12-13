@@ -1,5 +1,6 @@
+import 'package:e_anamnez/Widget/checkbox_sorgusu.dart';
 import 'package:e_anamnez/Widget/doctor_information.dart';
-import 'package:e_anamnez/hasta_bilgileri/sistemlerinSorgusu/santral_sinir.dart';
+import 'package:e_anamnez/hasta_bilgileri/sistemlerinSorgusu/solumun.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -54,75 +55,80 @@ class _KasPageState extends State<Kas> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Sistemlerin Sorgusu '),
-      ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: ListView(
           children: [
             SizedBox(height: 20),
-            Center(
-              child: Text(
-                'Kas',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.directions_run,
+                  size: 30,
+                  color: Colors.blue,
                 ),
-              ),
+                SizedBox(width: 8),
+                Text(
+                  'Kaslar',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 16),
-            // Checkbox'lar için bir liste oluşturuyoruz
-            checkbox(
-              "Ağrı",
-              _kasAgrisi,
-              (bool? value) {
+            // CustomCheckbox'lar için bir liste oluşturuyoruz
+            CustomCheckbox(
+              text: "Ağrı",
+              value: _kasAgrisi,
+              onChanged: (bool? value) {
                 setState(() {
                   _kasAgrisi = value ?? false;
                 });
               },
             ),
             SizedBox(height: 10),
-            checkbox(
-              "şişliki",
-              _sislik,
-              (bool? value) {
+            CustomCheckbox(
+              text: "Şişlik",
+              value: _sislik,
+              onChanged: (bool? value) {
                 setState(() {
                   _sislik = value ?? false;
                 });
               },
             ),
             SizedBox(height: 10),
-            checkbox(
-              "tutulma",
-              _tutulma,
-              (bool? value) {
+            CustomCheckbox(
+              text: "Tutulma",
+              value: _tutulma,
+              onChanged: (bool? value) {
                 setState(() {
                   _tutulma = value ?? false;
                 });
               },
             ),
             SizedBox(height: 10),
-            checkbox(
-              "kısıtlılık",
-              _kisitlilik,
-              (bool? value) {
+            CustomCheckbox(
+              text: "Kısıtlılık",
+              value: _kisitlilik,
+              onChanged: (bool? value) {
                 setState(() {
                   _kisitlilik = value ?? false;
                 });
               },
             ),
             SizedBox(height: 10),
-            checkbox(
-              "Kas gücū",
-              _kasGucu,
-              (bool? value) {
+            CustomCheckbox(
+              text: "Kas Gücü",
+              value: _kasGucu,
+              onChanged: (bool? value) {
                 setState(() {
                   _kasGucu = value ?? false;
                 });
               },
             ),
-
             SizedBox(height: 20), // Butonun üstünde biraz boşluk
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -134,7 +140,7 @@ class _KasPageState extends State<Kas> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (BuildContext context) {
-                    return SantralSinir(); // Kendi UserScreen'iniz burada
+                    return Solumun(); // Kendi UserScreen'iniz burada
                   }),
                 );
               },

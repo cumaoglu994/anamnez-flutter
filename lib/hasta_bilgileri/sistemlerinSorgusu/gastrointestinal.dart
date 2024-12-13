@@ -1,5 +1,6 @@
+import 'package:e_anamnez/Widget/checkbox_sorgusu.dart';
 import 'package:e_anamnez/Widget/doctor_information.dart';
-import 'package:e_anamnez/hasta_bilgileri/sistemlerinSorgusu/gilt.dart';
+import 'package:e_anamnez/hasta_bilgileri/sistemlerinSorgusu/kalp.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -61,114 +62,155 @@ class _GastrointestinalPageState extends State<Gastrointestinal> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Sistemlerin Sorgusu '),
-      ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: ListView(
           children: [
             SizedBox(height: 20),
             Center(
-              child: Text(
-                'Gastrointestinal',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.ac_unit, // Sindirimle ilgili bir ikon
+                    size: 30, // İkon boyutunu ayarlayın
+                    color: Colors.green, // İkon rengini ayarlayın
+                  ),
+                  SizedBox(width: 8), // İkon ile metin arasında boşluk
+                  Text(
+                    'Gastrointestinal',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 15),
             // Checkbox'lar için bir liste oluşturuyoruz
-            checkbox(
-              "İştaheızlık ve kilo kaybi",
-              _kiloKaybi,
-              (bool? value) {
+            CustomCheckbox(
+              text: "İştaheızlık ve kilo kaybi",
+              value: _kiloKaybi,
+              onChanged: (bool? value) {
                 setState(() {
                   _kiloKaybi = value ?? false;
                 });
               },
             ),
             SizedBox(height: 10),
-            checkbox(
-              "Diefaji",
-              _diefaji,
-              (bool? value) {
-                setState(() {
-                  _diefaji = value ?? false;
-                });
-              },
+            Row(
+              children: [
+                Flexible(
+                  child: CustomCheckbox(
+                    text: "Diefaji",
+                    value: _diefaji,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _diefaji = value ?? false;
+                      });
+                    },
+                  ),
+                ),
+                SizedBox(width: 15), // Checkbox'lar arasında boşluk
+                Flexible(
+                  child: CustomCheckbox(
+                    text: "Bulantı",
+                    value: _bulanti,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _bulanti = value ?? false;
+                      });
+                    },
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 10),
-            checkbox(
-              "Bulantı",
-              _bulanti,
-              (bool? value) {
-                setState(() {
-                  _bulanti = value ?? false;
-                });
-              },
-            ),
-            SizedBox(height: 10),
-            checkbox(
-              "kusma",
-              _kusma,
-              (bool? value) {
-                setState(() {
-                  _kusma = value ?? false;
-                });
-              },
-            ),
-            SizedBox(height: 10),
-            checkbox(
-              "hematenmez",
-              _hematenmez,
-              (bool? value) {
+            SizedBox(height: 15),
+
+            CustomCheckbox(
+              text: "hematenmez",
+              value: _hematenmez,
+              onChanged: (bool? value) {
                 setState(() {
                   _hematenmez = value ?? false;
                 });
               },
             ),
-            SizedBox(height: 10),
-            checkbox(
-              "Hazımsızlık",
-              _hazimsizlik,
-              (bool? value) {
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              children: [
+                Flexible(
+                  child: CustomCheckbox(
+                    text: "pirozis",
+                    value: _pirozis,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _pirozis = value ?? false;
+                      });
+                    },
+                  ),
+                ),
+                SizedBox(width: 15),
+                Flexible(
+                  child: CustomCheckbox(
+                    text: "Sarılık",
+                    value: _sarilik,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _sarilik = value ?? false;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            CustomCheckbox(
+              text: "Hazımsızlık",
+              value: _hazimsizlik,
+              onChanged: (bool? value) {
                 setState(() {
                   _hazimsizlik = value ?? false;
                 });
               },
             ),
             SizedBox(height: 10),
-            checkbox(
-              "pirozis",
-              _pirozis,
-              (bool? value) {
-                setState(() {
-                  _pirozis = value ?? false;
-                });
-              },
+            Row(
+              children: [
+                Flexible(
+                  child: CustomCheckbox(
+                    text: "kusma",
+                    value: _kusma,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _kusma = value ?? false;
+                      });
+                    },
+                  ),
+                ),
+                SizedBox(
+                  width: 15,
+                ),
+                Flexible(
+                  child: CustomCheckbox(
+                    text: "Karın ağrısı",
+                    value: _karinAgrisi,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _karinAgrisi = value ?? false;
+                      });
+                    },
+                  ),
+                ),
+              ],
             ),
+
             SizedBox(height: 10),
-            checkbox(
-              "Karın ağrısı",
-              _karinAgrisi,
-              (bool? value) {
-                setState(() {
-                  _karinAgrisi = value ?? false;
-                });
-              },
-            ),
-            SizedBox(height: 10),
-            checkbox(
-              " Sarılık",
-              _sarilik,
-              (bool? value) {
-                setState(() {
-                  _sarilik = value ?? false;
-                });
-              },
-            ),
+
             SizedBox(height: 10),
 
             ElevatedButton(
@@ -181,7 +223,7 @@ class _GastrointestinalPageState extends State<Gastrointestinal> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (BuildContext context) {
-                    return Gilt(); // Kendi UserScreen'iniz burada
+                    return Kalp(); // Kendi UserScreen'iniz burada
                   }),
                 );
               },

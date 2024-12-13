@@ -54,23 +54,30 @@ class _SolumunPageState extends State<Solumun> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Sistemlerin Sorgusu'),
-      ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: ListView(
           children: [
             SizedBox(height: 20),
-            Center(
-              child: Text(
-                ' Solumun',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.air,
+                  size: 30,
+                  color: Colors.blue,
                 ),
-              ),
+                SizedBox(width: 8),
+                Text(
+                  'Solunum',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
+
             SizedBox(height: 16),
             // Checkbox'lar için bir liste oluşturuyoruz
             checkbox(

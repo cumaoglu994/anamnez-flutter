@@ -63,10 +63,6 @@ class _HastaninSikayetiPageState extends State<HastaninSikayeti> {
           'oykusu': _hastaOykusuController.text,
           'sikayet': _hastaSikayetiController.text,
         }, SetOptions(merge: true));
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Bilgiler başarıyla güncellendi')),
-        );
       } else {
         print('Kullanıcı bulunamadı.');
       }
@@ -87,12 +83,22 @@ class _HastaninSikayetiPageState extends State<HastaninSikayeti> {
           child: Column(
             children: [
               SizedBox(height: 20),
-              Text(
-                'Hasta sikayeti',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                children: [
+                  Icon(
+                    Icons.healing, // Sağlıkla ilgili bir ikon
+                    size: 30, // İkon boyutunu ayarlayın
+                    color: Colors.green, // İkon rengini ayarlayın
+                  ),
+                  SizedBox(width: 8), // İkon ile metin arasında boşluk
+                  Text(
+                    'Hasta Şikayeti',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 20),
               textformu(

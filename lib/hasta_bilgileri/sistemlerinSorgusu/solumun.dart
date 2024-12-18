@@ -69,7 +69,7 @@ class _SolumunPageState extends State<Solumun> {
                 ),
                 SizedBox(width: 8),
                 Text(
-                  'Solunum',
+                  'Solunum sistemi ',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,

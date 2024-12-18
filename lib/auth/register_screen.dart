@@ -53,7 +53,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
-                      'assets/images/logo.png', width: 200, // Genişlik
+                      'assets/images/E_Anamnez.jpg', width: 200, // Genişlik
                       height: 200, // Yükseklik
                     ),
                     SizedBox(

@@ -25,6 +25,7 @@ dependencies:
   pdf: ^3.11.1
   printing: ^5.13.4
   intl: ^0.18.0
+  tflite_flutter: ^0.11.0
 
 
 dev_dependencies:
@@ -35,9 +36,11 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/logo.png
     - assets/images/female.jpg
     - assets/images/male.jpg
+    - assets/images/E_Anamnez.jpg
+    - assets/model.tflite
+    - assets/hastalik_tahmin_model.tflite
     
 
   fonts:

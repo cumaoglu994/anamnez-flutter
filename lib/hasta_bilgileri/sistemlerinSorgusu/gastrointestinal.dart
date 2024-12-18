@@ -75,9 +75,9 @@ class _GastrointestinalPageState extends State<Gastrointestinal> {
                     size: 30, // İkon boyutunu ayarlayın
                     color: Colors.green, // İkon rengini ayarlayın
                   ),
-                  SizedBox(width: 8), // İkon ile metin arasında boşluk
+                  SizedBox(width: 12), // İkon ile metin arasında boşluk
                   Text(
-                    'Gastrointestinal',
+                    'Gastrointestinal\n sistem ',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,

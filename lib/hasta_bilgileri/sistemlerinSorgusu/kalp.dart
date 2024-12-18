@@ -63,14 +63,15 @@ class _KalpPageState extends State<Kalp> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                SizedBox(width: 10),
                 Icon(
                   Icons.health_and_safety,
                   size: 30,
                   color: Colors.red,
                 ),
-                SizedBox(width: 8),
+                SizedBox(width: 18),
                 Text(
-                  'Kalp',
+                  ' Kardiyovasküler\n sistem ',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,

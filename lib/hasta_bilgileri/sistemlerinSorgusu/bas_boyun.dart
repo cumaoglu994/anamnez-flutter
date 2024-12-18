@@ -73,7 +73,7 @@ class _BasBoyunPageState extends State<BasBoyun> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(5.0),
         child: ListView(
           children: [
             SizedBox(height: 20),
@@ -87,7 +87,7 @@ class _BasBoyunPageState extends State<BasBoyun> {
                 ),
                 SizedBox(width: 8), // İkon ile metin arasında boşluk
                 Text(
-                  'Baş Boyun',
+                  'Genel durum öyküsü',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -150,7 +150,7 @@ class _BasBoyunPageState extends State<BasBoyun> {
                     },
                   ),
                 ),
-                SizedBox(width: 15),
+                SizedBox(width: 5),
                 Flexible(
                   child: CustomCheckbox(
                     text: "Kulak akıntısı",

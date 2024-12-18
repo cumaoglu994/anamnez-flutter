@@ -33,7 +33,7 @@ class CustomCheckbox extends StatelessWidget {
       child: CheckboxListTile(
         title: Text(
           text,
-          style: TextStyle(fontWeight: FontWeight.w500),
+          style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
         ),
         value: value,
         onChanged: onChanged,

@@ -30,89 +30,110 @@ class SikayetlerimPage extends StatelessWidget {
                   return Center(child: CircularProgressIndicator());
                 }
                 if (snapshot.hasError) {
-                  return Center(child: Text('Bir hata oluştu.'));
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.error, color: Colors.red, size: 64),
+                        SizedBox(height: 10),
+                        Text(
+                          'Bir hata oluştu. Lütfen tekrar deneyin.',
+                          style:
+                              TextStyle(fontSize: 16, color: Colors.grey[600]),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  );
                 }
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                   return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text(
-                        'Henüz şikayet kaydı yok. Lütfen şikayet kaydınızı ekleyin.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                      ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.inbox, size: 64, color: Colors.grey[400]),
+                        SizedBox(height: 20),
+                        Text(
+                          'Henüz şikayet kaydı yok.',
+                          style:
+                              TextStyle(fontSize: 18, color: Colors.grey[600]),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          'Lütfen şikayet kaydınızı ekleyin.',
+                          textAlign: TextAlign.center,
+                          style:
+                              TextStyle(fontSize: 16, color: Colors.grey[500]),
+                        ),
+                      ],
                     ),
                   );
                 }
 
-                return ListView(
-                  children: snapshot.data!.docs.map((doc) {
-                    Map<String, dynamic> data =
-                        doc.data() as Map<String, dynamic>;
-                    String sikayetId = doc.id; // Şikayet ID'si
+                return ListView.builder(
+                  padding: EdgeInsets.all(10),
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    final doc = snapshot.data!.docs[index];
+                    final data = doc.data() as Map<String, dynamic>;
+                    final sikayetId = doc.id;
 
-                    return Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Container(
-                        margin: EdgeInsets.symmetric(vertical: 8.0),
-                        padding: EdgeInsets.all(16.0),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.1),
-                              spreadRadius: 1,
-                              blurRadius: 6,
-                              offset: Offset(0, 4),
-                            ),
-                          ],
+                    return Card(
+                      margin: EdgeInsets.symmetric(vertical: 8.0),
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      child: ListTile(
+                        title: Text(
+                          data['sikayet'] ?? 'Şikayet Yok',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        child: ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(
-                            data['sikayet'] ?? 'Şikayet Yok',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
+                        subtitle: Text(
+                          data['tarih']?.toDate() != null
+                              ? DateFormat('dd/MM/yyyy HH:mm')
+                                  .format(data['tarih']?.toDate())
+                              : 'Tarih Yok',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
                           ),
-                          subtitle: Text(
-                            data['tarih']?.toDate() != null
-                                ? DateFormat('dd/MM/yyyy HH:mm')
-                                    .format(data['tarih']?.toDate())
-                                : 'Tarih Yok',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SikayetDetayiPage(
-                                  sikayetId: sikayetId,
-                                  sikayetData: data,
-                                ),
+                        ),
+                        trailing: Icon(Icons.arrow_forward_ios, size: 18),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SikayetDetayiPage(
+                                sikayetId: sikayetId,
+                                sikayetData: data,
                               ),
-                            );
-                          },
-                        ),
+                            ),
+                          );
+                        },
                       ),
                     );
-                  }).toList(),
+                  },
                 );
               },
             )
           : Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  'Lütfen giriş yapınız.',
-                  style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-                ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.lock_outline, size: 64, color: Colors.grey[400]),
+                  SizedBox(height: 20),
+                  Text(
+                    'Lütfen giriş yapınız.',
+                    style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                  ),
+                ],
               ),
             ),
     );

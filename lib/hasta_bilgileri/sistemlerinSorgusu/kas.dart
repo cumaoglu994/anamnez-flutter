@@ -70,7 +70,7 @@ class _KasPageState extends State<Kas> {
                 ),
                 SizedBox(width: 8),
                 Text(
-                  'Kaslar',
+                  'Kas iskelet sistemi',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -81,7 +81,7 @@ class _KasPageState extends State<Kas> {
             SizedBox(height: 16),
             // CustomCheckbox'lar için bir liste oluşturuyoruz
             CustomCheckbox(
-              text: "Ağrı",
+              text: " Kas Ağrısı",
               value: _kasAgrisi,
               onChanged: (bool? value) {
                 setState(() {
@@ -101,7 +101,7 @@ class _KasPageState extends State<Kas> {
             ),
             SizedBox(height: 10),
             CustomCheckbox(
-              text: "Tutulma",
+              text: "Kas Tutulma",
               value: _tutulma,
               onChanged: (bool? value) {
                 setState(() {

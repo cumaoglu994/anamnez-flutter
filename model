@@ -1,0 +1,109 @@
+import pandas as pd
+import numpy as np
+import tensorflow as tf
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+X = [
+    "Yüksek Ateş, Baş Ağrısı, Kas Ağrıları, Boğaz Ağrısı, Burun Akıntısı, Öksürük",  # Grip
+    "Yüksek Ateş, Göğüs Ağrısı, Nefes Darlığı, İştahsızlık, Yoğun Öksürük, Halsizlik",  # Zatürre
+    "Aşırı Susuzluk, Sık İdrara Çıkma, Kilo Kaybı, Ciltte Yaraların Geç İyileşmesi",  # Diyabet
+    "Baş Ağrısı, Burun Kanaması, Kulak Çınlaması, Çarpıntı, Halsizlik, Görme Bozukluğu",  # Hipertansiyon
+    "Sürekli Üzgünlük Hali, İştahsızlık veya Aşırı Yeme, Uykusuzluk veya Aşırı Uyuma, Enerji Eksikliği, Karar Vermekte Zorluk, Hayattan Zevk Alamama",  # Depresyon
+    "Şiddetli Baş Ağrısı, Işığa Hassasiyet, Bulantı, Kusma, Görme Sorunları, Ses Hassasiyeti",  # Migren
+    "Mide Ağrısı, Şişkinlik, Mide Yanması, Bulantı, İştahsızlık",  # Gastrit
+    "Nefes Darlığı, Öksürük, Göğüste Sıkışma, Hırıltılı Solunum, Egzersiz Sonrası Zorluk",  # Astım
+    "Halsizlik, Baş Dönmesi, Soluk Ten Rengi, Çarpıntı, Konsantrasyon Bozukluğu",  # Anemi (Kansızlık)
+    "Şiddetli Bel Ağrısı, Kanlı İdrar, İdrar Yaparken Ağrı",  # Böbrek Taşı
+    "Eklem Ağrısı, Sabah Tutukluğu, Şişlik, Hareket Kısıtlılığı",  # Romatoid Artrit
+    "Halsizlik, Kilo Artışı, Soğuk Hassasiyeti, Saç Dökülmesi",  # Tiroid Hastalıkları (Hipotiroidi)
+    "Çarpıntı, Kilo Kaybı, Terleme, Titreme", # Tiroid Hastalıkları (Hipertiroidi)
+    "Titreme, Hareketlerde Yavaşlama, Kas Sertliği, Denge Bozukluğu", # Parkinson Hastalığı
+    "Göğüs Ağrısı, Nefes Darlığı, Ayaklarda Ağrı", # Kolesterol Yüksekliği
+    "Ani Kilo Kaybı, Kronik Yorgunluk, Ateş, Şişlikler", # Kanser (Genel)
+    "Kızarıklık, Kaşıntı, Deride Kuruluk, Pul Pul Dökülme", # Cilt Enfeksiyonları (Egzama)
+    "Bacaklarda Ağrı, Şişlik, Damarların Görünür Hale Gelmesi", # Varis
+    "Sık İdrara Çıkma, İdrar Yaparken Zorluk", # Prostat
+    "Soluk Cilt, Tırnak Kırılması, Halsizlik", # Kansızlık (Demir Eksikliği)
+    "Nefes Darlığı, Çarpıntı, Ayaklarda Şişlik", # Kalp Yetmezliği
+    "Karın Ağrısı, Şişkinlik, İshal, Kilo Kaybı", # Çölyak Hastalığı
+]
+y = [
+    "Grip",           # Grip
+    "Zatürre",        # Zatürre
+    "Diyabet",        # Diyabet
+    "Hipertansiyon",  # Hipertansiyon
+    "Depresyon",      # Depresyon
+    "Migren",         # Migren
+    "Gastrit",        # Gastrit
+    "Astım",          # Astım
+    "Anemi",          # Anemi
+    "Böbrek Taşı",    # Böbrek Taşı
+    "Romatoid Artrit",# Romatoid Artrit
+    "Hipotiroidi",    # Tiroid Hastalıkları (Hipotiroidi)
+    "Hipertiroidi",   # Tiroid Hastalıkları (Hipertiroidi)
+    "Parkinson Hastalığı", # Parkinson Hastalığı
+    "Kolesterol Yüksekliği", # Kolesterol Yüksekliği
+    "Kanser (Genel)", # Kanser (Genel)
+    "Cilt Enfeksiyonları (Egzama)", # Cilt Enfeksiyonları (Egzama)
+    "Varis",          # Varis
+    "Prostat",        # Prostat
+    "Kansızlık (Demir Eksikliği)", # Kansızlık (Demir Eksikliği)
+    "Kalp Yetmezliği", # Kalp Yetmezliği
+    "Çölyak Hastalığı" # Çölyak Hastalığı
+]
+label_encoder = LabelEncoder()
+y_encoded = label_encoder.fit_transform(y)
+
+# Eğitim verisini tekil (one-hot) vektörlere dönüştürme
+from sklearn.feature_extraction.text import CountVectorizer
+vectorizer = CountVectorizer()
+X_encoded = vectorizer.fit_transform(X).toarray()
+
+# Eğitim ve test verilerini ayırma
+X_train, X_test, y_train, y_test = train_test_split(X_encoded, y_encoded, test_size=0.2, random_state=42)
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Input(shape=(X_train.shape[1],)),  # Giriş boyutu
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.Dense(64, activation='relu'),
+    tf.keras.layers.Dense(len(np.unique(y_encoded)), activation='softmax')  # Çıkış boyutu sınıf sayısı kadar
+])
+
+model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+model.fit(X_train, y_train, epochs=100, batch_size=32, validation_split=0.1)
+test_loss, test_accuracy = model.evaluate(X_test, y_test)
+print(f"Test Accuracy: {test_accuracy * 100:.2f}%")
+
+model.save("hastalik_tahmin_model.h5")
+
+# TFLite dönüştürücü
+converter = tf.lite.TFLiteConverter.from_keras_model(model)
+tflite_model = converter.convert()
+
+# TFLite modelini kaydetme
+with open("hastalik_tahmin_model.tflite", "wb") as f:
+    f.write(tflite_model)
+
+print("Model başarıyla TensorFlow Lite formatına dönüştürüldü ve kaydedildi.")
+# Kullanıcı belirtilerini işleme ve tahmin fonksiyonu
+def kullanici_tahmini():
+    # Kullanıcıdan giriş al
+    belirtiler = input("Belirtilerinizi aralarında virgül koyarak yazınız: ")
+    belirtiler_listesi = [belirtiler]
+
+    # Giriş verilerini vektörize et
+    kullanici_encoded = vectorizer.transform(belirtiler_listesi).toarray()
+
+    # Modelden tahmin al
+    tahmin = model.predict(kullanici_encoded)
+    tahmin_sinifi = np.argmax(tahmin)
+
+    # Tahmin edilen sınıfı insan tarafından okunabilir hale getir
+    tahmin_hastalik = label_encoder.inverse_transform([tahmin_sinifi])[0]
+    print(f"Tahmin edilen hastalık: {tahmin_hastalik}")
+
+# Kullanıcı tahmini çalıştırma
+kullanici_tahmini()

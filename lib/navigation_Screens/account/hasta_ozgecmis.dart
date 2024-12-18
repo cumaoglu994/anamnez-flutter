@@ -115,6 +115,7 @@ class _HastaOzgecmisPageState extends State<HastaOzgecmis> {
                 ),
               ),
             ),
+            SizedBox(height: 20),
             textformu(
               controller: _hastalikController,
               labelText: 'Hastalik',

@@ -55,11 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Image.asset(
-                    'assets/images/E_Anamnez.jpg', // Genişlik
-                    height: 200, // Yükseklik
-                  ),
-                  SizedBox(
-                    height: 20,
+                    'assets/images/logo.png', // Genişlik
                   ),
                   Text(
                     "Hesabına Giriş Yapın",
@@ -116,8 +112,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           labelText: 'E-postayı Girin',
                           labelStyle: TextStyle(
                               color: Colors.grey[600]), // Etiket rengi
-                          prefixIcon: Icon(Icons.email,
-                              color: Colors.blue), // E-posta simgesi
+                          prefixIcon: Icon(
+                            Icons.email,
+                            color: Color.fromARGB(
+                                255, 45, 62, 72), // Hafif koyu ton
+                          ), // E-posta simgesi
                           border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.circular(12), // Kenar yuvarlama
@@ -166,8 +165,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           labelText: "Şifreyi Girin", // Etiket
                           labelStyle: TextStyle(
                               color: Colors.grey[600]), // Etiket rengi
-                          prefixIcon: Icon(Icons.lock,
-                              color: Colors.blue), // Kilit simgesi
+                          prefixIcon: Icon(
+                            Icons.lock,
+                            color: Color.fromARGB(
+                                255, 45, 62, 72), // Hafif koyu ton
+                          ), // Kilit simgesi
                           border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.circular(12), // Kenar yuvarlama
@@ -196,8 +198,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Colors.blue,
-                            Colors.blueAccent
+                            Colors.blueAccent,
+                            const Color.fromARGB(255, 33, 243, 173),
                           ], // Gradyan arka plan
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -224,7 +226,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 style: TextStyle(
                                   fontSize: 20,
                                   letterSpacing: 2, // Harfler arası mesafe
-                                  color: Colors.white, // Yazı rengi
+                                  color: Color.fromARGB(
+                                      255, 45, 62, 72), // Hafif koyu ton
                                   fontWeight: FontWeight.bold, // Yazı kalınlığı
                                 ),
                               ),

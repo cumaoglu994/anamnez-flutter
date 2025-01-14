@@ -26,6 +26,7 @@ dependencies:
   printing: ^5.13.4
   intl: ^0.18.0
   tflite_flutter: ^0.11.0
+  animate_do: ^3.3.4
 
 
 dev_dependencies:
@@ -38,9 +39,10 @@ flutter:
   assets:
     - assets/images/female.jpg
     - assets/images/male.jpg
-    - assets/images/E_Anamnez.jpg
-    - assets/model.tflite
-    - assets/hastalik_tahmin_model.tflite
+    - assets/images/logo.png
+    - assets/symptom_disease_model.tflite
+    - assets/vocabulary.txt
+    - assets/labels.txt
     
 
   fonts:

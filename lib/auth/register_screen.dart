@@ -53,8 +53,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
-                      'assets/images/E_Anamnez.jpg', width: 200, // Genişlik
-                      height: 200, // Yükseklik
+                      'assets/images/logo.png',
                     ),
                     SizedBox(
                       height: 20,
@@ -101,8 +100,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                           labelStyle: TextStyle(
                               color: Colors.grey[600]), // Etiket rengi
-                          prefixIcon: Icon(Icons.person,
-                              color: Colors.blue), // Kilit simgesi
+                          prefixIcon: Icon(
+                            Icons.person,
+                            color: Color.fromARGB(
+                                255, 45, 62, 72), // Hafif koyu ton
+                          ), // Kilit simgesi
                           border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.circular(12), // Kenar yuvarlama
@@ -139,8 +141,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           labelText: 'E-postayı Girin',
                           labelStyle: TextStyle(
                               color: Colors.grey[600]), // Etiket rengi
-                          prefixIcon: Icon(Icons.email,
-                              color: Colors.blue), // E-posta simgesi
+                          prefixIcon: Icon(
+                            Icons.email,
+                            color: Color.fromARGB(
+                                255, 45, 62, 72), // Hafif koyu ton
+                          ), // E-posta simgesi
                           border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.circular(12), // Kenar yuvarlama
@@ -174,8 +179,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           labelText: "Şifreyi Girin", // Etiket
                           labelStyle: TextStyle(
                               color: Colors.grey[600]), // Etiket rengi
-                          prefixIcon: Icon(Icons.lock,
-                              color: Colors.blue), // Kilit simgesi
+                          prefixIcon: Icon(
+                            Icons.lock,
+                            color: Color.fromARGB(
+                                255, 45, 62, 72), // Hafif koyu ton
+                          ), // Kilit simgesi
                           border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.circular(12), // Kenar yuvarlama
@@ -189,6 +197,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                     ),
+                    SizedBox(
+                      height: 10,
+                    ),
                     GestureDetector(
                       onTap: () {
                         _signUpUsers();
@@ -197,23 +208,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         width: MediaQuery.of(context).size.width - 40,
                         height: 50,
                         decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.8),
-                          borderRadius: BorderRadius.circular(25),
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.blueAccent,
+                              const Color.fromARGB(255, 104, 228, 109)
+                            ], // Gradyan arka plan
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(
+                              25), // Yuvarlatılmış köşeler
+                          boxShadow: [
+                            BoxShadow(
+                              color:
+                                  Colors.blue.withOpacity(0.5), // Gölge rengi
+                              spreadRadius: 1,
+                              blurRadius: 5,
+                              offset: Offset(0, 3), // Gölge konumu
+                            ),
+                          ],
                         ),
                         child: Center(
-                            child: _isloading
-                                ? CircularProgressIndicator(
-                                    color: Colors.white,
-                                  )
-                                : Text(
-                                    "Kayıt Ol",
-                                    style: TextStyle(
-                                        color:
-                                            Color.fromARGB(255, 255, 255, 255),
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 4),
-                                  )),
+                          child: _isloading
+                              ? CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                              : Text(
+                                  "Kayıt Ol",
+                                  style: TextStyle(
+                                      color: Color.fromARGB(
+                                          255, 45, 62, 72), // Hafif koyu ton
+
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 4),
+                                ),
+                        ),
                       ),
                     ),
                     Row(

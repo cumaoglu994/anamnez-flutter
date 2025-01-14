@@ -1,5 +1,5 @@
+import 'package:e_anamnez/ai/ai.dart';
 import 'package:flutter/material.dart';
-import 'package:tflite_flutter/tflite_flutter.dart';
 
 class SikayetDetayiPage extends StatefulWidget {
   final String sikayetId;
@@ -12,17 +12,16 @@ class SikayetDetayiPage extends StatefulWidget {
 }
 
 class _SikayetDetayiPageState extends State<SikayetDetayiPage> {
-  Interpreter? _interpreter;
+  final DiseasePredictor _predictor = DiseasePredictor();
   String sikayetText = '';
   String _aiResultText = ' ';
   String doctorResultText = 'Henüz değerlendirilmedi';
-  bool _isModelLoaded = false;
 
   @override
   void initState() {
     super.initState();
     processSikayetData();
-    _loadModel();
+    _initializePredictor();
   }
 
   void processSikayetData() {
@@ -35,52 +34,18 @@ class _SikayetDetayiPageState extends State<SikayetDetayiPage> {
     });
   }
 
-  Future<void> _loadModel() async {
-    try {
-      _interpreter =
-          await Interpreter.fromAsset('assets/hastalik_tahmin_model.tflite');
-      setState(() {
-        _isModelLoaded = true;
-      });
-      print("Model başarıyla yüklendi.");
-      _runModel(sikayetText); // Model yüklendikten sonra çalıştır.
-    } catch (e) {
-      print("Model yüklenirken hata oluştu: $e");
-    }
-  }
-
-  Future<void> _runModel(String input) async {
-    if (!_isModelLoaded || _interpreter == null) {
-      print("Model henüz yüklenmedi.");
-      return;
-    }
-
-    try {
-      List<String> stringInputs = input.split(" "); // Girdiyi boşluklarla ayır
-      List<int> tokenizedInput =
-          stringInputs.map((word) => _wordToToken(word)).toList();
-
-      var inputTensor = [tokenizedInput];
-      var outputShape = _interpreter!.getOutputTensor(0).shape;
-      var output = List.filled(outputShape[1], 0).reshape([1, outputShape[1]]);
-
-      _interpreter!.run(inputTensor, output);
-
-      setState(() {
-        _aiResultText = "Tahmin Sonucu: ${output[0][0].toStringAsFixed(2)}";
-      });
-    } catch (e) {
-      print("Model çalıştırılırken hata oluştu: $e");
-    }
-  }
-
-  int _wordToToken(String word) {
-    return word.hashCode % 1000; // Basit bir token dönüşümü
+  Future<void> _initializePredictor() async {
+    await _predictor.loadModel();
+    // Model yüklendikten sonra tahmin yap
+    String prediction = await _predictor.predictDisease(sikayetText);
+    setState(() {
+      _aiResultText = prediction;
+    });
   }
 
   @override
   void dispose() {
-    _interpreter?.close();
+    _predictor.dispose();
     super.dispose();
   }
 
@@ -101,8 +66,6 @@ class _SikayetDetayiPageState extends State<SikayetDetayiPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (!_isModelLoaded) Center(child: CircularProgressIndicator()),
-              SizedBox(height: 20),
               _buildDetailCard('Şikayet Detayı', sikayetText, Colors.green),
               SizedBox(height: 20),
               _buildDetailCard('Yapay Zeka Tahmin Sonucu',

@@ -18,6 +18,12 @@ class _HastaSoygecmisiPageState extends State<HastaSoygecmisi> {
   final TextEditingController _cocuklerController = TextEditingController();
   final TextEditingController _aileController = TextEditingController();
 
+  // Sağlık teması için renk paleti
+  final Color primaryGreen = Color.fromARGB(169, 76, 175, 79);
+  final Color secondaryGreen = Color.fromARGB(158, 129, 199, 132);
+  final Color lightGreen = Color(0xFFE8F5E9);
+  final Color darkGreen = Color(0xFF2E7D32);
+
   @override
   void initState() {
     super.initState();
@@ -43,8 +49,6 @@ class _HastaSoygecmisiPageState extends State<HastaSoygecmisi> {
 
           setState(() {});
         }
-      } else {
-        print('Kullanıcı bulunamadı.');
       }
     } catch (e) {
       print('Kullanıcı bilgileri çekilirken hata: $e');
@@ -67,15 +71,20 @@ class _HastaSoygecmisiPageState extends State<HastaSoygecmisi> {
         }, SetOptions(merge: true));
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Bilgiler başarıyla güncellendi')),
+          SnackBar(
+            content: Text('Bilgiler başarıyla güncellendi'),
+            backgroundColor: primaryGreen,
+            behavior: SnackBarBehavior.floating,
+          ),
         );
-      } else {
-        print('Kullanıcı bulunamadı.');
       }
     } catch (e) {
-      print('Güncelleme hatası: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Bilgiler güncellenemedi.')),
+        SnackBar(
+          content: Text('Bilgiler güncellenemedi.'),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ),
       );
     }
   }
@@ -83,109 +92,141 @@ class _HastaSoygecmisiPageState extends State<HastaSoygecmisi> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Hesabım'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [primaryGreen.withOpacity(0.1), Colors.white],
+          ),
         ),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            SizedBox(height: 20),
-            Center(
-              child: Text(
-                'Hasta Soygeçmişi',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: ListView(
+            children: [
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.family_restroom,
+                        size: 48,
+                        color: primaryGreen,
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Aile Sağlık Geçmişi',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: darkGreen,
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      _buildFormField(
+                        controller: _anneController,
+                        labelText: 'Anne Sağlık Geçmişi',
+                        icon: Icons.person_outline,
+                      ),
+                      SizedBox(height: 16),
+                      _buildFormField(
+                        controller: _babaController,
+                        labelText: 'Baba Sağlık Geçmişi',
+                        icon: Icons.person,
+                      ),
+                      SizedBox(height: 16),
+                      _buildFormField(
+                        controller: _kardeslerController,
+                        labelText: 'Kardeşler Sağlık Geçmişi',
+                        icon: Icons.people_outline,
+                      ),
+                      SizedBox(height: 16),
+                      _buildFormField(
+                        controller: _cocuklerController,
+                        labelText: 'Çocuklar Sağlık Geçmişi',
+                        icon: Icons.child_care,
+                      ),
+                      SizedBox(height: 16),
+                      _buildFormField(
+                        controller: _aileController,
+                        labelText: 'Ailedeki Hastalıklar',
+                        icon: Icons.medical_services_outlined,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 16),
-            textformu(
-              controller: _anneController,
-              labelText: 'Anne',
-              keyboardType: TextInputType.text,
-            ),
-            SizedBox(height: 16),
-            textformu(
-              controller: _babaController,
-              labelText: 'Baba',
-              keyboardType: TextInputType.text,
-            ),
-            SizedBox(height: 16),
-            textformu(
-              controller: _kardeslerController,
-              labelText: 'kardesler',
-              keyboardType: TextInputType.text,
-            ),
-            SizedBox(height: 16),
-            textformu(
-              controller: _cocuklerController,
-              labelText: 'cocukler',
-              keyboardType: TextInputType.text,
-            ),
-            SizedBox(height: 16),
-            textformu(
-              controller: _aileController,
-              labelText: 'ailedeki hastaliklar',
-              keyboardType: TextInputType.text,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                padding: EdgeInsets.symmetric(vertical: 20.0),
+              SizedBox(height: 24),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryGreen,
+                  foregroundColor: Colors.white,
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 3,
+                ),
+                onPressed: () async {
+                  await _updateUserInfo();
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  'KAYDET',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-              onPressed: () async {
-                await _updateUserInfo();
-                Navigator.pop(
-                    context); // Güncelleme sonrası mevcut sayfayı kapatır ve önceki ekrana döner
-              },
-              child: Text('KAYDET'),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Container textformu({
+  Widget _buildFormField({
     required TextEditingController controller,
     required String labelText,
-    required TextInputType keyboardType,
+    required IconData icon,
   }) {
-    return Container(
-      child: TextField(
-        controller: controller,
-        keyboardType: keyboardType,
-        decoration: InputDecoration(
-          labelText: labelText,
-          labelStyle: TextStyle(
-            fontSize: 18,
-            color: Colors.grey[800],
-          ),
-          filled: true,
-          fillColor: Colors.grey[200],
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
-              color: Colors.blue,
-              width: 2,
-            ),
-          ),
-          prefixIcon: Icon(Icons.person, color: Colors.grey),
-          contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: labelText,
+        labelStyle: TextStyle(
+          color: darkGreen,
+          fontSize: 16,
         ),
+        prefixIcon: Icon(icon, color: secondaryGreen),
+        filled: true,
+        fillColor: lightGreen,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: primaryGreen,
+            width: 2,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+      ),
+      style: TextStyle(
+        fontSize: 16,
+        color: Colors.black87,
       ),
     );
   }

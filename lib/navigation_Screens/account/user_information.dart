@@ -10,13 +10,18 @@ class UserInformation extends StatefulWidget {
 class _UserInformationPageState extends State<UserInformation> {
   String? _maritalStatus;
   String? _gender;
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _surnameController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _addressController = TextEditingController();
-  final TextEditingController _ageController = TextEditingController();
-  final TextEditingController _weightController = TextEditingController();
-  final TextEditingController _occupationController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  DateTime? _selectedDate;
+
+  final Map<String, TextEditingController> _controllers = {
+    'name': TextEditingController(),
+    'surname': TextEditingController(),
+    'phone': TextEditingController(),
+    'address': TextEditingController(),
+    'age': TextEditingController(),
+    'weight': TextEditingController(),
+    'occupation': TextEditingController(),
+  };
 
   @override
   void initState() {
@@ -28,174 +33,241 @@ class _UserInformationPageState extends State<UserInformation> {
     try {
       var currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser != null) {
-        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        var userDoc = await FirebaseFirestore.instance
             .collection('hasta')
             .doc(currentUser.uid)
             .get();
 
         if (userDoc.exists) {
           var userData = userDoc.data() as Map<String, dynamic>;
-          _nameController.text = userData['name'] ?? '';
-          _surnameController.text = userData['surname'] ?? '';
-          _phoneController.text = userData['phoneNumber'] ?? '';
-          _addressController.text = userData['address'] ?? '';
-          _gender = userData['gender'];
-          _maritalStatus = userData['maritalStatus'];
-          _ageController.text = userData['age'] ?? '';
-          _weightController.text = userData['weight'] ?? '';
-          _occupationController.text = userData['occupation'] ?? '';
-
-          setState(() {});
+          setState(() {
+            _controllers['name']?.text = userData['name'] ?? '';
+            _controllers['surname']?.text = userData['surname'] ?? '';
+            _controllers['phone']?.text = userData['phoneNumber'] ?? '';
+            _controllers['address']?.text = userData['address'] ?? '';
+            _controllers['age']?.text = userData['age'] ?? '';
+            _controllers['weight']?.text = userData['weight'] ?? '';
+            _controllers['occupation']?.text = userData['occupation'] ?? '';
+            _gender = userData['gender'];
+            _maritalStatus = userData['maritalStatus'];
+          });
         }
-      } else {
-        print('Kullanıcı bulunamadı.');
       }
     } catch (e) {
-      print('Kullanıcı bilgileri çekilirken hata: $e');
+      _showErrorSnackBar('Bilgiler yüklenirken bir hata oluştu');
     }
   }
 
   Future<void> _updateUserInfo() async {
     try {
+      if (!_formKey.currentState!.validate()) return;
+
       var currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser != null) {
         await FirebaseFirestore.instance
             .collection('hasta')
             .doc(currentUser.uid)
             .set({
-          'name': _nameController.text,
-          'surname': _surnameController.text,
-          'phoneNumber': _phoneController.text,
-          'address': _addressController.text,
+          'name': _controllers['name']?.text,
+          'surname': _controllers['surname']?.text,
+          'phoneNumber': _controllers['phone']?.text,
+          'address': _controllers['address']?.text,
           'gender': _gender,
           'maritalStatus': _maritalStatus,
-          'age': _ageController.text,
-          'weight': _weightController.text,
-          'occupation': _occupationController.text,
+          'age': _controllers['age']?.text,
+          'weight': _controllers['weight']?.text,
+          'occupation': _controllers['occupation']?.text,
         }, SetOptions(merge: true));
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Bilgiler başarıyla güncellendi')),
-        );
-      } else {
-        print('Kullanıcı bulunamadı.');
+        _showSuccessSnackBar('Bilgileriniz başarıyla güncellendi');
+        Navigator.pop(context);
       }
     } catch (e) {
-      print('Güncelleme hatası: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Bilgiler güncellenemedi.')),
-      );
+      _showErrorSnackBar('Güncelleme sırasında bir hata oluştu');
     }
+  }
+
+  void _showSuccessSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   Widget _buildTextField(
     String label,
-    TextEditingController controller, {
+    TextEditingController? controller, {
     IconData? icon,
     TextInputType keyboardType = TextInputType.text,
+    String? Function(String?)? validator,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-          vertical: 8.0), // Her bir alan arasına boşluk eklemek için
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
         controller: controller,
         keyboardType: keyboardType,
+        validator: validator,
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: TextStyle(color: Colors.blueGrey, fontSize: 16),
+          prefixIcon: icon != null ? Icon(icon, color: Colors.green) : null,
           filled: true,
-          fillColor:
-              Colors.grey.shade100, // Arka plana hafif bir renk eklemek için
-          prefixIcon:
-              icon != null ? Icon(icon, color: Colors.blueAccent) : null,
+          fillColor: Colors.grey.shade50,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: Colors.blueGrey, width: 1.5),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade300),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: Colors.blueAccent, width: 2.0),
-          ),
-
-          contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-        ),
-        style: TextStyle(fontSize: 16, color: Colors.black87),
-      ),
-    );
-  }
-
-// Cinsiyet seçeneğini oluşturan widget
-  buildGenderOption({
-    required String label,
-    required IconData icon,
-    required String value,
-    required bool isSelected, // Seçili durumunu belirten parametre
-  }) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _gender = value; // Seçili cinsiyeti güncelle
-        });
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.blue[100] : Colors.grey[200],
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: isSelected ? Colors.blue : Colors.grey),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: isSelected ? Colors.blue : Colors.grey[700]),
-            SizedBox(width: 4),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 16,
-                color: isSelected ? Colors.blue : Colors.grey[700],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-// Medeni durum seçeneğini oluşturan widget
-  buildMaritalStatusOption({
-    required String label,
-    required IconData icon,
-    required String value,
-    required bool isSelected, // Seçili durumunu belirten parametre
-  }) {
-    return Container(
-      child: GestureDetector(
-        onTap: () {
-          setState(() {
-            _maritalStatus = value; // Seçili medeni durumu güncelle
-          });
-        },
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: isSelected ? Colors.blue[100] : Colors.grey[200],
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: isSelected ? Colors.blue : Colors.grey),
+            borderSide: BorderSide(color: Theme.of(context).primaryColor),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.red.shade300),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.red),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSegmentedButton(
+    String title,
+    List<Map<String, dynamic>> options,
+    String? selectedValue,
+    Function(String) onSelect,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey.shade700,
+            ),
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
-            children: [
-              Icon(icon, color: isSelected ? Colors.blue : Colors.grey[700]),
-              SizedBox(width: 4),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: isSelected ? Colors.blue : Colors.grey[700],
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: options.map((option) {
+              bool isSelected = selectedValue == option['value'];
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () => onSelect(option['value']),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? const Color.fromARGB(177, 76, 175, 79)
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          option['icon'],
+                          color:
+                              isSelected ? Colors.white : Colors.grey.shade600,
+                          size: 20,
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          option['label'],
+                          style: TextStyle(
+                            color: isSelected
+                                ? Colors.white
+                                : Colors.grey.shade600,
+                            fontWeight: isSelected
+                                ? FontWeight.w600
+                                : FontWeight.normal,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ],
+              );
+            }).toList(),
           ),
         ),
+      ],
+    );
+  }
+
+  Widget _buildDateField() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextFormField(
+        controller: _controllers['age'],
+        readOnly: true,
+        decoration: InputDecoration(
+          labelText: 'Doğum Tarihi',
+          prefixIcon: Icon(Icons.calendar_today, color: Colors.green),
+          filled: true,
+          fillColor: Colors.grey.shade50,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade300),
+          ),
+        ),
+        onTap: () async {
+          final DateTime? picked = await showDatePicker(
+            context: context,
+            initialDate: _selectedDate ?? DateTime.now(),
+            firstDate: DateTime(1900),
+            lastDate: DateTime.now(),
+            builder: (context, child) {
+              return Theme(
+                data: Theme.of(context).copyWith(
+                  colorScheme: ColorScheme.light(
+                    primary: Theme.of(context).primaryColor,
+                  ),
+                ),
+                child: child!,
+              );
+            },
+          );
+          if (picked != null) {
+            setState(() {
+              _selectedDate = picked;
+              _controllers['age']?.text =
+                  "${picked.day}/${picked.month}/${picked.year}";
+            });
+          }
+        },
       ),
     );
   }
@@ -203,179 +275,129 @@ class _UserInformationPageState extends State<UserInformation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Hesabım'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(20.0),
+      body: Form(
+        key: _formKey,
         child: ListView(
+          padding: EdgeInsets.all(16.0),
           children: [
+            // Profile Header
             Center(
-              child: Text(
-                'Kişisel bilgiler',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundColor:
+                        Theme.of(context).primaryColor.withOpacity(0.1),
+                    child: Icon(
+                      Icons.person,
+                      size: 50,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Kişisel Bilgiler',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                ],
               ),
             ),
+
+            // Form Fields
             _buildTextField(
               'Ad',
-              _nameController,
-              icon: Icons.person,
-              keyboardType: TextInputType.name,
+              _controllers['name'],
+              icon: Icons.person_outline,
+              validator: (value) =>
+                  value?.isEmpty ?? true ? 'Bu alan zorunludur' : null,
             ),
             _buildTextField(
               'Soyad',
-              _surnameController,
+              _controllers['surname'],
               icon: Icons.person_outline,
-              keyboardType: TextInputType.name,
+              validator: (value) =>
+                  value?.isEmpty ?? true ? 'Bu alan zorunludur' : null,
             ),
             _buildTextField(
-              'Telefon Numarası',
-              _phoneController,
-              icon: Icons.phone,
+              'Telefon',
+              _controllers['phone'],
+              icon: Icons.phone_outlined,
               keyboardType: TextInputType.phone,
+              validator: (value) =>
+                  value?.isEmpty ?? true ? 'Bu alan zorunludur' : null,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                buildGenderOption(
-                  label: 'Erkek',
-                  icon: Icons.male,
-                  value: 'Erkek',
-                  isSelected: _gender == 'Erkek', // Seçili durumu kontrol et
-                ),
-                SizedBox(width: 30),
-                buildGenderOption(
-                  label: 'Kadın',
-                  icon: Icons.female,
-                  value: 'Kadın',
-                  isSelected: _gender == 'Kadın', // Seçili durumu kontrol et
-                ),
+
+            _buildSegmentedButton(
+              'Cinsiyet',
+              [
+                {'label': 'Erkek', 'value': 'Erkek', 'icon': Icons.male},
+                {'label': 'Kadın', 'value': 'Kadın', 'icon': Icons.female},
               ],
+              _gender,
+              (value) => setState(() => _gender = value),
             ),
-            _buildTextField(
-              'Adres',
-              _addressController,
-              icon: Icons.home,
-              keyboardType: TextInputType.streetAddress,
-            ),
-            SizedBox(height: 5),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                buildMaritalStatusOption(
-                  label: 'Evli',
-                  icon: Icons.family_restroom,
-                  value: 'Evli',
-                  isSelected:
-                      _maritalStatus == 'Evli', // Seçili durumu kontrol et
-                ),
-                SizedBox(width: 20),
-                buildMaritalStatusOption(
-                  label: 'Bekar',
-                  icon: Icons.person_add,
-                  value: 'Bekar',
-                  isSelected:
-                      _maritalStatus == 'Bekar', // Seçili durumu kontrol et
-                ),
-                SizedBox(width: 20),
-                buildMaritalStatusOption(
-                  label: 'Dul',
-                  icon: Icons.heart_broken,
-                  value: 'Dul',
-                  isSelected:
-                      _maritalStatus == 'Dul', // Seçili durumu kontrol et
-                ),
+
+            _buildSegmentedButton(
+              'Medeni Durum',
+              [
+                {'label': 'Evli', 'value': 'Evli', 'icon': Icons.favorite},
+                {'label': 'Bekar', 'value': 'Bekar', 'icon': Icons.person},
+                {'label': 'Dul', 'value': 'Dul', 'icon': Icons.heart_broken},
               ],
+              _maritalStatus,
+              (value) => setState(() => _maritalStatus = value),
             ),
+
             SizedBox(height: 10),
-            _buildDatePickerField(
-              'Dogum Tarahi',
-              _ageController,
-              icon: Icons.cake,
-            ),
+            _buildDateField(),
             _buildTextField(
-              'Kilo',
-              _weightController,
-              icon: Icons.monitor_weight,
+              'Kilo (kg)',
+              _controllers['weight'],
+              icon: Icons.monitor_weight_outlined,
               keyboardType: TextInputType.number,
             ),
             _buildTextField(
               'Meslek',
-              _occupationController,
-              icon: Icons.work,
-              keyboardType: TextInputType.text,
+              _controllers['occupation'],
+              icon: Icons.work_outline,
             ),
-            SizedBox(height: 20),
+            /*    _buildTextField(
+              'Adres',
+              _controllers['address'],
+              icon: Icons.home_outlined,
+              keyboardType: TextInputType.multiline,
+            ),*/
             ElevatedButton(
+              onPressed: _updateUserInfo,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                padding: EdgeInsets.symmetric(vertical: 20.0),
+                backgroundColor: const Color.fromARGB(177, 76, 175, 79),
+                padding: EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
-              onPressed: () async {
-                await _updateUserInfo();
-                Navigator.pop(
-                    context); // Güncelleme sonrası mevcut sayfayı kapatır ve önceki ekrana döner
-              },
-              child: Text('KAYDET'),
+              child: Text(
+                'Bilgileri Güncelle',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           ],
         ),
       ),
     );
-  } // Kullanıcının seçtiği tarih
+  }
 
-  DateTime? _selectedDate;
-  Widget _buildDatePickerField(String label, TextEditingController controller,
-      {IconData? icon}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextFormField(
-        controller: controller,
-        readOnly: true, // Kullanıcının elle tarih girmesini engeller
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: TextStyle(color: Colors.blueGrey, fontSize: 16),
-          filled: true,
-          fillColor: Colors.grey.shade100,
-          prefixIcon:
-              icon != null ? Icon(icon, color: Colors.blueAccent) : null,
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: Colors.blueGrey, width: 1.5),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: Colors.blueAccent, width: 2.0),
-          ),
-          contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-        ),
-        onTap: () async {
-          DateTime? pickedDate = await showDatePicker(
-            context: context,
-            initialDate: _selectedDate ?? DateTime.now(),
-            firstDate: DateTime(1900), // Geçerli bir tarih aralığı belirleyin
-            lastDate: DateTime.now(),
-          );
-
-          if (pickedDate != null) {
-            setState(() {
-              _selectedDate = pickedDate;
-              controller.text =
-                  "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-            });
-          }
-        },
-        style: TextStyle(fontSize: 16, color: Colors.black87),
-      ),
-    );
+  @override
+  void dispose() {
+    _controllers.forEach((_, controller) => controller.dispose());
+    super.dispose();
   }
 }

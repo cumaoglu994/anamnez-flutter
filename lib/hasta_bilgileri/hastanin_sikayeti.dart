@@ -22,7 +22,6 @@ class _HastaninSikayetiPageState extends State<HastaninSikayeti> {
   @override
   void initState() {
     super.initState();
-    // Eğer veritabanında varsa, bu verileri controller'lara set et
     _loadData();
   }
 
@@ -77,10 +76,13 @@ class _HastaninSikayetiPageState extends State<HastaninSikayeti> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:
+          Color(0xFFF0F4F8), // Soft background color for modern look
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(20.0),
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 20),
               Row(
@@ -88,73 +90,43 @@ class _HastaninSikayetiPageState extends State<HastaninSikayeti> {
                   Icon(
                     Icons.healing, // Sağlıkla ilgili bir ikon
                     size: 30, // İkon boyutunu ayarlayın
-                    color: Colors.green, // İkon rengini ayarlayın
+                    color: Colors.greenAccent, // Daha modern ikon rengi
                   ),
-                  SizedBox(width: 8), // İkon ile metin arasında boşluk
+                  SizedBox(width: 10),
                   Text(
                     'Hasta Şikayeti',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 26,
                       fontWeight: FontWeight.bold,
+                      color: Colors.black87, // Modern yazı rengi
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 20),
-              textformu(
+              SizedBox(height: 30),
+              _buildTextField(
                 controller: _hastaSikayetiController,
-                labelText: 'Hasta şikayeti',
+                labelText: 'şikayetinizle ilgili detayları yazın.',
                 keyboardType: TextInputType.text,
+                icon: Icons.medical_services,
               ),
-              SizedBox(height: 20),
-              Container(
-                child: Container(
-                  height: 175,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 1,
-                        blurRadius: 5,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: TextFormField(
-                    controller: _hastaOykusuController,
-                    decoration: InputDecoration(
-                      labelText: 'Hasta öyküsü',
-                      labelStyle: TextStyle(
-                        fontSize: 18,
-                        color: Colors.grey[800],
-                      ),
-                      filled: false,
-                      border: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      prefixIcon: Icon(Icons.person, color: Colors.grey),
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Bu alan boş olamaz';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
+              SizedBox(height: 30),
+              _buildTextField(
+                controller: _hastaOykusuController,
+                labelText: 'Hasta öyküsü',
+                keyboardType: TextInputType.text,
+                icon: Icons.history_edu,
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 40),
               Center(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green, // Buton rengi
-                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+                    backgroundColor: Colors.greenAccent, // Modern buton rengi
+                    padding: EdgeInsets.symmetric(vertical: 18, horizontal: 40),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
+                    elevation: 5, // Butona gölge efekti
                   ),
                   onPressed: () async {
                     if (_formKey.currentState?.validate() ?? false) {
@@ -183,52 +155,50 @@ class _HastaninSikayetiPageState extends State<HastaninSikayeti> {
     );
   }
 
-  Container textformu({
+  Container _buildTextField({
     required TextEditingController controller,
     required String labelText,
     required TextInputType keyboardType,
+    required IconData icon,
   }) {
     return Container(
-      child: Form(
-        key: _formKey,
-        child: Container(
-          height: 175,
-          decoration: BoxDecoration(
-            color: Colors.grey[200],
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 1,
-                blurRadius: 5,
-                offset: Offset(0, 3),
-              ),
-            ],
+      height: 200,
+      margin: EdgeInsets.symmetric(vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        color: Colors.white, // Modern beyaz arka plan
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(0, 3),
           ),
-          child: TextFormField(
-            controller: controller,
-            keyboardType: keyboardType,
-            decoration: InputDecoration(
-              labelText: labelText,
-              labelStyle: TextStyle(
-                fontSize: 18,
-                color: Colors.grey[800],
-              ),
-              filled: false,
-              border: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              prefixIcon: Icon(Icons.person, color: Colors.grey),
-              contentPadding:
-                  EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Bu alan boş olamaz';
-              }
-              return null;
-            },
+        ],
+      ),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: keyboardType,
+        decoration: InputDecoration(
+          labelText: labelText,
+          labelStyle: TextStyle(
+            fontSize: 16,
+            color: Colors.black54,
           ),
+          prefixIcon: Icon(icon, color: Colors.greenAccent),
+          filled: true,
+          fillColor: Colors.white,
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
         ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Bu alan boş olamaz';
+          }
+          return null;
+        },
       ),
     );
   }

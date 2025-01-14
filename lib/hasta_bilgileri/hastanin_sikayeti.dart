@@ -15,9 +15,14 @@ class HastaninSikayeti extends StatefulWidget {
 
 class _HastaninSikayetiPageState extends State<HastaninSikayeti> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _hastaOykusuController = TextEditingController();
   final TextEditingController _hastaSikayetiController =
       TextEditingController();
+
+  // Define gradient colors
+  final List<Color> gradientColors = [
+    Colors.blueAccent,
+    const Color.fromARGB(255, 33, 243, 173),
+  ];
 
   @override
   void initState() {
@@ -38,7 +43,6 @@ class _HastaninSikayetiPageState extends State<HastaninSikayeti> {
 
         if (snapshot.exists) {
           setState(() {
-            _hastaOykusuController.text = snapshot['oykusu'] ?? '';
             _hastaSikayetiController.text = snapshot['sikayet'] ?? '';
           });
         }
@@ -59,7 +63,6 @@ class _HastaninSikayetiPageState extends State<HastaninSikayeti> {
             .doc(DoctorInformation.sikayetId)
             .set({
           'tarih': DateTime.now(),
-          'oykusu': _hastaOykusuController.text,
           'sikayet': _hastaSikayetiController.text,
         }, SetOptions(merge: true));
       } else {
@@ -68,7 +71,10 @@ class _HastaninSikayetiPageState extends State<HastaninSikayeti> {
     } catch (e) {
       print('Güncelleme hatası: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Bilgiler güncellenemedi.')),
+        SnackBar(
+          content: Text('Bilgiler güncellenemedi.'),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
@@ -76,129 +82,178 @@ class _HastaninSikayetiPageState extends State<HastaninSikayeti> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          Color(0xFFF0F4F8), // Soft background color for modern look
-      body: Padding(
-        padding: EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 20),
-              Row(
-                children: [
-                  Icon(
-                    Icons.healing, // Sağlıkla ilgili bir ikon
-                    size: 30, // İkon boyutunu ayarlayın
-                    color: Colors.greenAccent, // Daha modern ikon rengi
-                  ),
-                  SizedBox(width: 10),
-                  Text(
-                    'Hasta Şikayeti',
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87, // Modern yazı rengi
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 30),
-              _buildTextField(
-                controller: _hastaSikayetiController,
-                labelText: 'şikayetinizle ilgili detayları yazın.',
-                keyboardType: TextInputType.text,
-                icon: Icons.medical_services,
-              ),
-              SizedBox(height: 30),
-              _buildTextField(
-                controller: _hastaOykusuController,
-                labelText: 'Hasta öyküsü',
-                keyboardType: TextInputType.text,
-                icon: Icons.history_edu,
-              ),
-              SizedBox(height: 40),
-              Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.greenAccent, // Modern buton rengi
-                    padding: EdgeInsets.symmetric(vertical: 18, horizontal: 40),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 5, // Butona gölge efekti
-                  ),
-                  onPressed: () async {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      await _updateUserInfo();
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) {
-                            return BasBoyun();
-                          },
-                        ),
-                      );
-                    }
-                  },
-                  child: Text(
-                    'KAYDET',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: gradientColors,
+            stops: const [0.1, 0.9],
+          ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.all(20.0),
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 20),
+                    _buildHeader(),
+                    SizedBox(height: 40),
+                    _buildComplaintField(),
+                    SizedBox(height: 40),
+                    _buildSubmitButton(),
+                    SizedBox(height: 250),
+                  ],
                 ),
               ),
-              SizedBox(height: 20),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Container _buildTextField({
-    required TextEditingController controller,
-    required String labelText,
-    required TextInputType keyboardType,
-    required IconData icon,
-  }) {
+  Widget _buildHeader() {
     return Container(
-      height: 200,
-      margin: EdgeInsets.symmetric(vertical: 10),
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white, // Modern beyaz arka plan
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.white.withOpacity(0.9),
+        borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: Offset(0, 3),
+            color: Colors.black12,
+            blurRadius: 10,
+            offset: Offset(0, 5),
           ),
         ],
       ),
-      child: TextFormField(
-        controller: controller,
-        keyboardType: keyboardType,
-        decoration: InputDecoration(
-          labelText: labelText,
-          labelStyle: TextStyle(
-            fontSize: 16,
-            color: Colors.black54,
+      child: Row(
+        children: [
+          Icon(
+            Icons.medical_services,
+            size: 35,
+            color: gradientColors[0],
           ),
-          prefixIcon: Icon(icon, color: Colors.greenAccent),
-          filled: true,
-          fillColor: Colors.white,
-          border: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+          SizedBox(width: 15),
+          Text(
+            'Hasta Şikayeti',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+              letterSpacing: 1,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildComplaintField() {
+    return _buildTextField(
+      controller: _hastaSikayetiController,
+      labelText: 'Şikayetiniz',
+      hintText: 'Lütfen şikayetinizle ilgili detayları yazın',
+      icon: Icons.healing,
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String labelText,
+    required String hintText,
+    required IconData icon,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 15,
+            offset: Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: 20, top: 15),
+            child: Row(
+              children: [
+                Icon(icon, color: gradientColors[0]),
+                SizedBox(width: 10),
+                Text(
+                  labelText,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          TextFormField(
+            controller: controller,
+            maxLines: 6,
+            decoration: InputDecoration(
+              hintText: hintText,
+              hintStyle: TextStyle(color: Colors.grey),
+              contentPadding: EdgeInsets.all(20),
+              border: InputBorder.none,
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Bu alan boş bırakılamaz';
+              }
+              return null;
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSubmitButton() {
+    return Center(
+      child: Container(
+        width: double.infinity,
+        height: 60,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: gradientColors[0],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            elevation: 8,
+          ),
+          onPressed: () async {
+            if (_formKey.currentState?.validate() ?? false) {
+              await _updateUserInfo();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => BasBoyun(),
+                ),
+              );
+            }
+          },
+          child: Text(
+            'KAYDET',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 2,
+            ),
+          ),
         ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Bu alan boş olamaz';
-          }
-          return null;
-        },
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:e_anamnez/Widget/doctor_information.dart';
 import 'package:e_anamnez/hasta_bilgileri/sistemlerinSorgusu/solumun.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -26,7 +27,7 @@ class _GastrointestinalPageState extends State<Gastrointestinal> {
             .collection('hasta')
             .doc(currentUser.uid)
             .collection('sikayetlerim')
-            .doc('symptoms')
+            .doc(DoctorInformation.sikayetId)
             .set(_symptoms, SetOptions(merge: true));
 
         ScaffoldMessenger.of(context).showSnackBar(
